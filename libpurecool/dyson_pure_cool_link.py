@@ -181,6 +181,9 @@ class DysonPureCoolLink(DysonDevice):
         """Disconnect from the device."""
         self._request_thread.stop()
         self._connected = False
+        # Call disconnect callbacks
+        for callback in self._callback_disconnect:
+            callback()
 
     def request_environmental_state(self):
         """Request new state message."""
@@ -189,9 +192,13 @@ class DysonPureCoolLink(DysonDevice):
                 "msg": "REQUEST-PRODUCT-ENVIRONMENT-CURRENT-SENSOR-DATA",
                 "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
             }
-            self._mqtt.publish(
+            message_info = self._mqtt.publish(
                 self._product_type + "/" + self._serial + "/command",
                 json.dumps(payload))
+            if message_info.rc == mqtt.MQTT_ERR_NO_CONN:
+                _LOGGER.warning('Device not available!!!')
+                self._device_available = False
+                self.disconnect()
         else:
             _LOGGER.warning(
                 "Unable to send commands because device %s is not connected",
@@ -210,7 +217,11 @@ class DysonPureCoolLink(DysonDevice):
                 "mode-reason": "LAPP",
                 "data": data
             }
-            self._mqtt.publish(self.command_topic, json.dumps(payload), 1)
+            message_info = self._mqtt.publish(self.command_topic, json.dumps(payload), 1)
+            if message_info.rc == mqtt.MQTT_ERR_NO_CONN:
+                _LOGGER.warning('Device not available!!!')
+                self._device_available = False
+                self.disconnect()
         else:
             _LOGGER.warning("Not connected, can not set configuration: %s",
                             self.serial)

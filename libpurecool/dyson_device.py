@@ -98,6 +98,7 @@ class DysonDevice:
         self._connected = False
         self._mqtt = None
         self._callback_message = []
+        self._callback_disconnect = []
         self._device_available = False
         self._current_state = None
         self._state_data_available = Queue()
@@ -137,11 +138,21 @@ class DysonDevice:
                 "msg": "REQUEST-CURRENT-STATE",
                 "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
             }
-            self._mqtt.publish(self.command_topic, json.dumps(payload))
+            message_info = self._mqtt.publish(self.command_topic, json.dumps(payload))
+            from paho.mqtt.client import MQTT_ERR_NO_CONN
+            if message_info.rc == MQTT_ERR_NO_CONN:
+                _LOGGER.warning('Device not available!!!')
+                self._device_available = False
+                self.disconnect()
         else:
             _LOGGER.warning(
                 "Unable to send commands because device %s is not connected",
                 self.serial)
+
+    def disconnect(self):
+        """Disconnect and free resources if required
+
+        """
 
     @property
     def state(self):
@@ -210,6 +221,10 @@ class DysonDevice:
         """Return callback functions when message are received."""
         return self._callback_message
 
+    @property
+    def callback_disconnect(self):
+        return self._callback_disconnect
+
     def add_message_listener(self, callback_message):
         """Add message listener."""
         self._callback_message.append(callback_message)
@@ -222,6 +237,18 @@ class DysonDevice:
     def clear_message_listener(self):
         """Clear all message listener."""
         self.callback_message.clear()
+
+    def add_disconnect_listener(self, callback_disconnect):
+        """Add on disconnect listener"""
+        self._callback_disconnect.append(callback_disconnect)
+
+    def remove_disconnect_listener(self, callback_disconnect):
+        """Remove a on disconnect listener"""
+        if callback_disconnect in self._callback_disconnect:
+            self.callback_disconnect.remove(callback_disconnect)
+
+    def clear_disconnect_listener(self):
+        self.callback_disconnect.clear()
 
     @property
     def device_available(self):
