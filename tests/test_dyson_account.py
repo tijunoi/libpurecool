@@ -2,7 +2,7 @@ import unittest
 
 from unittest import mock
 
-from libpurecool.dyson import DysonAccount, DysonPureCoolLink, \
+from libdyson.dyson import DysonAccount, DysonPureCoolLink, \
     DysonPureHotCoolLink, Dyson360Eye, DysonNotLoggedException
 
 

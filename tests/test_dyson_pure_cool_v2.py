@@ -3,12 +3,12 @@ import unittest
 from unittest import mock
 from unittest.mock import Mock
 
-from libpurecool.const import FanPower, FrontalDirection, AutoMode, \
+from libdyson.const import FanPower, FrontalDirection, AutoMode, \
     OscillationV2, NightMode, ContinuousMonitoring, \
     FanSpeed, ResetFilter, DYSON_PURE_COOL, SLEEP_TIMER_OFF
-from libpurecool.dyson_device import NetworkDevice
-from libpurecool.dyson_pure_cool import DysonPureCool
-from libpurecool.dyson_pure_state_v2 import \
+from libdyson.dyson_device import NetworkDevice
+from libdyson.dyson_pure_cool import DysonPureCool
+from libdyson.dyson_pure_state_v2 import \
     DysonPureCoolV2State, DysonEnvironmentalSensorV2State
 
 

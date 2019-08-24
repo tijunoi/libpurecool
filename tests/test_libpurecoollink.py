@@ -4,16 +4,16 @@ from unittest import mock
 from unittest.mock import Mock
 import json
 
-from libpurecool.dyson_device import NetworkDevice
-from libpurecool.dyson_pure_cool_link import DysonPureCoolState, \
+from libdyson.dyson_device import NetworkDevice
+from libdyson.dyson_pure_cool_link import DysonPureCoolState, \
     DysonEnvironmentalSensorState, DysonPureCoolLink
-from libpurecool.dyson_pure_hotcool_link import DysonPureHotCoolLink
-from libpurecool.dyson_pure_state import DysonPureHotCoolState
-from libpurecool.const import FanMode, NightMode, FanSpeed, Oscillation, \
+from libdyson.dyson_pure_hotcool_link import DysonPureHotCoolLink
+from libdyson.dyson_pure_state import DysonPureHotCoolState
+from libdyson.const import FanMode, NightMode, FanSpeed, Oscillation, \
     FanState, QualityTarget, StandbyMonitoring as SM, \
     DYSON_PURE_COOL_LINK_DESK as Desk, DYSON_PURE_HOT_COOL_LINK_TOUR as Hot, \
     HeatMode, HeatState, HeatTarget, FocusMode, TiltState, ResetFilter
-from libpurecool.exceptions import DysonInvalidTargetTemperatureException
+from libdyson.exceptions import DysonInvalidTargetTemperatureException
 
 
 def _mocked_request_state(*args, **kwargs):
@@ -199,7 +199,7 @@ class TestLibPureCoolLink(unittest.TestCase):
         self.assertEqual(mocked_loop_start.call_count, 1)
         self.assertEqual(mocked_loop_stop.call_count, 1)
 
-    @mock.patch('libpurecool.zeroconf.Zeroconf.close')
+    @mock.patch('libdyson.zeroconf.Zeroconf.close')
     def test_connect_device_fail(self, mocked_close_zeroconf):
         device = DysonPureCoolLink({
             "Active": True,
