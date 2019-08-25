@@ -4,8 +4,8 @@ runtime/*
 .coverage
 .tox/
 .cache/
-libpurecoollink.egg-info/
-libpurecoollink/__pycache__/
+libdyson.egg-info/
+libdyson/__pycache__/
 tests/__pycache__/
 dist/*
 build/
