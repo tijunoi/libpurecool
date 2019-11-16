@@ -1,5 +1,5 @@
 netifaces
 six
-requests
+requests==2.20.1
 paho_mqtt
 pycryptodome
